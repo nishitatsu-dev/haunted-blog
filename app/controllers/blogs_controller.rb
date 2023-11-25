@@ -3,13 +3,21 @@
 class BlogsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
 
-  before_action :set_blog, only: %i[show edit update destroy]
+  before_action :set_current_user_blog, only: %i[edit update destroy]
 
   def index
     @blogs = Blog.search(params[:term]).published.default_order
   end
 
-  def show; end
+  def show
+    blog = Blog.find(params[:id])
+    @blog = if blog.owned_by?(current_user)
+              blog
+            else
+              Blog.find_by!(id: params[:id], secret: false)
+            end
+    @blog[:content] = ERB::Util.html_escape(@blog[:content])
+  end
 
   def new
     @blog = Blog.new
@@ -43,11 +51,17 @@ class BlogsController < ApplicationController
 
   private
 
-  def set_blog
-    @blog = Blog.find(params[:id])
+  def set_current_user_blog
+    @blog = Blog.find_by!(id: params[:id], user_id: current_user.id)
+    @blog[:content] = ERB::Util.html_escape(@blog[:content])
   end
 
   def blog_params
-    params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+    premium_user = User.find(current_user.id).premium
+    if premium_user
+      params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+    else
+      params.require(:blog).permit(:title, :content, :secret)
+    end
   end
 end
