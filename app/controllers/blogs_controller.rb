@@ -55,7 +55,7 @@ class BlogsController < ApplicationController
   end
 
   def blog_params
-    premium_user = User.find(current_user.id).premium
+    premium_user = current_user.premium
     if premium_user
       params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
     else
