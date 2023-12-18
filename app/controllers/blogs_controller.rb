@@ -16,7 +16,6 @@ class BlogsController < ApplicationController
             else
               Blog.find_by!(id: params[:id], secret: false)
             end
-    @blog[:content] = ERB::Util.html_escape(@blog[:content])
   end
 
   def new
@@ -53,7 +52,6 @@ class BlogsController < ApplicationController
 
   def set_current_user_blog
     @blog = Blog.find_by!(id: params[:id], user_id: current_user.id)
-    @blog[:content] = ERB::Util.html_escape(@blog[:content])
   end
 
   def blog_params
