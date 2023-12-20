@@ -11,7 +11,7 @@ class BlogsController < ApplicationController
 
   def show
     @blog = if current_user
-              Blog.where(id: params[:id]).where("user_id = #{current_user.id} OR secret = false").take!
+              Blog.where('user_id = ? OR secret = false', current_user.id.to_s).find(params[:id])
             else
               Blog.find_by!(id: params[:id], secret: false)
             end
