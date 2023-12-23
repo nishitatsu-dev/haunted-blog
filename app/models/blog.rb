@@ -15,7 +15,7 @@ class Blog < ApplicationRecord
 
   scope :allowed_viewing, lambda { |current_user|
     if current_user
-      where('user_id = ? OR secret = false', current_user.id.to_s)
+      where('user_id = ? OR secret = false', current_user.id)
     else
       where(secret: false)
     end
