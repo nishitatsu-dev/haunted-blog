@@ -14,11 +14,8 @@ class Blog < ApplicationRecord
   }
 
   scope :allowed_viewing, lambda { |current_user|
-    if current_user
-      where('user_id = ? OR secret = false', current_user.id)
-    else
-      where(secret: false)
-    end
+    current_user_id = current_user ? current_user.id : 'null'
+    where('user_id = ? OR secret = false', current_user_id)
   }
 
   scope :default_order, -> { order(id: :desc) }
