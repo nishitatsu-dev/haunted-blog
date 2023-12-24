@@ -14,7 +14,7 @@ class Blog < ApplicationRecord
   }
 
   scope :allowed_viewing, lambda { |current_user|
-    current_user_id = current_user ? current_user.id : 'null'
+    current_user_id = current_user ? current_user.id : nil
     where('user_id = ? OR secret = false', current_user_id)
   }
 
