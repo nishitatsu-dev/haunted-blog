@@ -14,8 +14,7 @@ class Blog < ApplicationRecord
   }
 
   scope :allowed_viewing, lambda { |current_user|
-    current_user_id = current_user ? current_user.id : nil
-    where(user_id: current_user_id).or(Blog.published)
+    where(user_id: current_user&.id).or(Blog.published)
   }
 
   scope :default_order, -> { order(id: :desc) }
